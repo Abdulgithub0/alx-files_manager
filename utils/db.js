@@ -1,4 +1,5 @@
 import mongodb from 'mongodb';
+import sha1 from 'sha1';
 
 /**
  * DBClient - A wrapper interface to specific set of operations on mongodb
@@ -36,6 +37,30 @@ class DBClient {
    * @return {Promise}
    */
   async nbFiles() { return this.mongoDb.db().collection('files').countDocuments(); }
+  
+  /**
+   * async method that new user to mongodb
+   * @return {Object | null}
+   */ 
+  async createUser(email, password) {
+    try {
+      const newUser = await this.mongoDb.db().collection('users').insertOne({ email: email, password: sha1(password) });
+      return { email: email, id: newUser.insertedId.toString() };
+    } catch (error) {
+      return null;
+    }
+  }
+
+  /**
+   * async method that check if a user by @param exits in db
+   * @param {String} - representing email
+   * @return {Boolean}
+   */
+  async findUserBy(email) {
+    const user = await this.mongoDb.db().collection('users').findOne({ email: email });
+    if (!user) return false;
+    return true
+  }
 }
 
 export const dbClient = new DBClient();
