@@ -26,4 +26,7 @@ router.get('/disconnect', AuthController.getDisconnect);
 // handle active user session
 router.get('/users/me', UsersController.getMe);
 
+// handle files upload
+router.post('files', FilesController.postUpload);
+
 export default router;
