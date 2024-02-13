@@ -56,10 +56,9 @@ class DBClient {
    * @param {String} - representing email
    * @return {Boolean}
    */
-  async findUserBy(email) {
-    const user = await this.mongoDb.db().collection('users').findOne({ email: email });
-    if (!user) return false;
-    return true
+  async findUserBy(params) {
+    const user = await this.mongoDb.db().collection('users').findOne(params);
+    return user;
   }
 }
 
