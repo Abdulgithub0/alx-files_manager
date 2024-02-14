@@ -84,7 +84,6 @@ class FileProcessor {
     const file = path.join(this.folderName, fileName);
     try {
       await fs.writeFile(file, content);
-      console.log(file)
       return file;
     } catch (error){
       console.error(error)

@@ -2,6 +2,7 @@ import dbClient from '../utils/db'
 import redisClient from '../utils/redis';
 import fprocess from '../utils/filetools';
 import { v4 } from 'uuid';
+import { ObjectId } from 'mongodb';
 
 /**
  * FilesController - contain middleware methods for files related activies by users
@@ -50,9 +51,10 @@ export default class FilesController{
     postData.localPath = lPath;
     const data = await dbClient.createFile(postData);
     if (!data) {
-      rest.status(501).json({error: 'Error Saving file details to db' });
+      res.status(501).json({error: 'Error Saving file details to db' });
       return;
     }
+    data.userId.toString();
     res.status(201).json(data);
   }
 }
