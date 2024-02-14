@@ -2,6 +2,8 @@ import { Router, json, urlencoded } from 'express';
 import AppController from '../controllers/AppController';
 import UsersController from '../controllers/UsersController';
 import AuthController from '../controllers/AuthController';
+import FilesController from '../controllers/FilesController';
+
 
 const router = Router();
 
@@ -27,6 +29,6 @@ router.get('/disconnect', AuthController.getDisconnect);
 router.get('/users/me', UsersController.getMe);
 
 // handle files upload
-router.post('files', FilesController.postUpload);
+router.post('/files', FilesController.postUpload);
 
 export default router;

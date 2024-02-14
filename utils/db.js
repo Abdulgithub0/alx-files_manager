@@ -50,15 +50,40 @@ class DBClient {
       return null;
     }
   }
+  
+  /*
+   * async method that new user to mongodb
+   * @params {Object} -  file data
+   * @return {Object | null}
+   */
+  async createFile(params) {
+    try {
+      const newFile = await this.mongoDb.db().collection('files').insertOne(params);
+      //params.id = newFile.insertedId.toString();
+      return params;
+    } catch (err) {
+      return null;
+    }
+  }
 
   /**
    * async method that check if a user by @param exits in db
-   * @param {String} - representing email
-   * @return {Boolean}
+   * @param {String} - representing search user details
+   * @return {Object | null} match user on success or null if otherwise
    */
   async findUserBy(params) {
     const user = await this.mongoDb.db().collection('users').findOne(params);
     return user;
+  }
+
+  /**
+   * async method that check if a file by @param exits in db
+   * @param {String} - representing search file details
+   * @return {Object | null} match file on success or null if otherwise
+   */
+  async findFileBy(params) {
+    const file = await this.mongoDb.db().collection('files').findOne(params);
+    return file;
   }
 }
 

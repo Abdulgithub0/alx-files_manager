@@ -1,13 +1,19 @@
 import redisClient from '../utils/redis';
 import dbClient from '../utils/db';
 import { ObjectId } from 'mongodb';
+import * as fs from 'fs/promises';
+import path from 'path';
 
 /**
  * Fileprocessor - interface to various methods needed for file operations on server.
  */
 
 class FileProcessor {
-  constructor () {}
+
+  constructor () {
+    this.folderName = process.env?.FOLDER_PATH ?? '/tmp/files_manager';
+    this.isFolderExist = false;
+  }
 
   /**
    * Scann through various request.body of an uploaded file
@@ -20,6 +26,9 @@ class FileProcessor {
     if (!token) return [401, { error: 'Unauthorized' }];
     const userId = await redisClient.get(`auth_${token}`);
     if (!userId) return [401, { error: 'Unauthorized' }];
+
+    //saving userId to request.body
+    req.body.userId = userId;
 
     //check the request body and access the required and optional post fields
     const body = req.body ?? null;
@@ -44,6 +53,43 @@ class FileProcessor {
 
     // success
     return null;
+  }
+
+  /**
+   * check if a this.folderName exist and change this.isFolderExist to true
+   */
+  async folderExist() {
+    try {
+      const stats = await fs.stat(this.folderName);
+      if (stats.isDirectory()) this.isFolderExist = true;
+    } catch(error) {
+      if (error.code !== 'ENOENT') console.error(error);
+    }
+  }
+  
+  /**
+   * create a folder
+   */
+  async createFolder() {
+    this.folder = fs.mkdir(this.folderName, { recursive: true });
+  }
+
+  /**
+   * write into or create a file if does not exist and write into it
+   * @param {String} - filename
+   * @param {String} - file content
+   * @return {Boolean}
+   */
+  async createFile(fileName, content) {
+    const file = path.join(this.folderName, fileName);
+    try {
+      await fs.writeFile(file, content);
+      console.log(file)
+      return file;
+    } catch (error){
+      console.error(error)
+      return null;
+    }
   }
 }
 
