@@ -16,7 +16,7 @@ class FileProcessor {
   }
 
   /**
-   * Scann through various request.body of an uploaded file
+   * Scan through the request.body of an uploaded file
    * @params: {Request}
    * @return: {Object || null}
    */
@@ -44,7 +44,7 @@ class FileProcessor {
     if (!body.hasOwnProperty('parentId')) {
       req.body.parentId = 0;
     } else if (req.body.parentId !== 0){
-      const isParentExist = await dbClient.findUserBy({ _id: ObjectId(req.body.parentId) });
+      const isParentExist = await dbClient.findFileBy({ _id: ObjectId(req.body.parentId) });
       if (!isParentExist) return [400, { error: 'Parent not found' }];
       if (isParentExist.type !== 'folder') return [400, {error: 'Parent is not a folder'} ];
     }

@@ -85,6 +85,21 @@ class DBClient {
     const file = await this.mongoDb.db().collection('files').findOne(params);
     return file;
   }
+
+  /**
+   * async method that retrieve files in form of pages from mongodb
+   * @size {Array} array object containing page number and max number of document on the page
+   * @query {Object} object to search for on the db
+   */
+  async retrieveFiles(size, query) {
+    const pagination = [{ $match: query}, { $skip: size[0] * size[1] }, { $limit: size[1] }];
+    try {
+      const files = await this.mongoDb.db().collection('files').aggregate(pagination).toArray();
+      return files;
+    } catch(error) {
+      return [];
+    }
+  }
 }
 
 export const dbClient = new DBClient();
