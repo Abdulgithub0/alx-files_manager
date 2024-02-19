@@ -8,7 +8,7 @@ import FilesController from '../controllers/FilesController';
 const router = Router();
 
 // local router middleware for parsing  application/json request body
-router.use(json({limit: '10mb'}));
+router.use(json({limit: '3mb'}));
 
 // handle route to db and redis status state
 router.get('/status', AppController.getStatus);
